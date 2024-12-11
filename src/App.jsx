@@ -1,13 +1,18 @@
-import ToolCard from "./components/ToolCard"
+import React from "react";
+import { Layout } from "antd";
+import AppHeader from "./components/appHeader";
+import PromoSection from "./components/promoData";
 
-function App() {
+const { Content } = Layout;
 
-
+const App = () => {
   return (
-    <div>
-        <ToolCard/>
-    </div>
-  )
-}
+    <Layout>
+      <AppHeader/>
+      <PromoSection/>
+    
+    </Layout>
+  );
+};
 
-export default App
+export default App;
