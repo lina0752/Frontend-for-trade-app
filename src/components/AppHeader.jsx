@@ -4,7 +4,7 @@ import { MenuOutlined, SearchOutlined, HeartOutlined, ShoppingCartOutlined } fro
 
 const { Header } = Layout;
 
-function AppHeader (){
+function AppHeader() {
   return (
     <Header
       style={{
@@ -13,6 +13,7 @@ function AppHeader (){
         alignItems: "center",
         padding: "0 16px",
         flexWrap: "wrap",
+        justifyContent: "space-between", 
       }}
     >
       {/* Логотип */}
@@ -28,17 +29,8 @@ function AppHeader (){
         TradeApp
       </div>
 
-      {/* Кнопка меню */}
-      <MenuOutlined
-        style={{
-          fontSize: "20px",
-          color: "white",
-          marginRight: "16px",
-          flexShrink: 0,
-        }}
-      />
 
-      {/* Поле поиска */}
+
       <Input
         placeholder="Поиск"
         prefix={<SearchOutlined />}
@@ -51,44 +43,48 @@ function AppHeader (){
         }}
       />
 
-      {/* Меню иконок */}
-      <Menu
-        mode="horizontal"
-        theme="dark"
-        style={{
-          backgroundColor: "transparent",
-          borderBottom: "none",
-        }}
-      >
-        {/* Кнопка "Войти" */}
-        <Menu.Item
-          key="login"
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Menu
+          mode="horizontal"
+          theme="dark"
           style={{
-            color: "white",
-            padding: "0 16px",
-            flexShrink: 0,
+            backgroundColor: "transparent",
+            borderBottom: "none",
+            margin: 0,
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          <Button
-            type="primary"
+          {/* Кнопка "Войти" */}
+          <Menu.Item
+            key="login"
             style={{
-              backgroundColor: "white",
-              color: "#007bff",
-              borderRadius: "20px",
+              color: "white",
+              padding: "0 16px",
+              flexShrink: 0,
             }}
           >
-            Войти
-          </Button>
-        </Menu.Item>
-        <Menu.Item key="favorites" icon={<HeartOutlined />} style={{ color: "white" }}>
-          Избранное
-        </Menu.Item>
-        <Menu.Item key="cart" icon={<ShoppingCartOutlined />} style={{ color: "white" }}>
-          Корзина
-        </Menu.Item>
-      </Menu>
+            <Button
+              type="primary"
+              style={{
+                backgroundColor: "white",
+                color: "#007bff",
+                borderRadius: "20px",
+              }}
+            >
+              Войти
+            </Button>
+          </Menu.Item>
+
+          {/* Кнопка "Избранное" */}
+          <Menu.Item key="favorites" icon={<HeartOutlined />} style={{ color: "white" }}>
+            Избранное
+          </Menu.Item>
+
+        </Menu>
+      </div>
     </Header>
   );
-};
+}
 
 export default AppHeader;
