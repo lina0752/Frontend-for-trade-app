@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import ToolCard from "./ToolCard"; 
+import ToolCard from "./ToolCard";
+import AddProductForm from "./AddProductForm";  
 
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
+  const [showAddProductForm, setShowAddProductForm] = useState(false); 
   const navigate = useNavigate();
 
   const onLogout = () => {
@@ -42,6 +44,13 @@ const ProfilePage = () => {
     fetchProfileData();
   }, []);
 
+  const handleProductAdded = (newProduct) => {
+    setProfileData((prev) => ({
+      ...prev,
+      products: [...prev.products, newProduct],
+    }));
+  };
+
   if (error) return <div>{error}</div>;
 
   return (
@@ -49,6 +58,15 @@ const ProfilePage = () => {
       {profileData && (
         <div>
           <h3 className="mt-8 text-xl font-semibold">My Products</h3>
+          <button
+            onClick={() => setShowAddProductForm(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Add Product
+          </button>
+          {showAddProductForm && (
+            <AddProductForm onClose={() => setShowAddProductForm(false)} onProductAdded={handleProductAdded} />
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {profileData.products && profileData.products.length > 0 ? (
               profileData.products.map((product) => (

@@ -1,42 +1,26 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+import ToolCard from "./ToolCard";
 
-const UserProducts = () => {
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const token = localStorage.getItem("token");
-            if (token) {
-                try {
-                    const response = await axios.get("http://127.0.0.1:8000/api/products/", {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-                    setProducts(response.data);
-                } catch (err) {
-                    console.error("Ошибка при загрузке продуктов:", err);
-                }
-            }
-        };
-
-        fetchProducts();
-    }, []);
-
-    return (
-        <div className="p-4">
-            <h1 className="text-xl font-bold mb-4">Мои продукты</h1>
-            <div className="grid grid-cols-4 gap-4">
-                {products.map((product) => (
-                    <div key={product.id} className="border p-4 rounded shadow">
-                        <h2 className="text-lg font-semibold">{product.title}</h2>
-                        <p>{product.description}</p>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+const UserProducts = ({ products }) => {
+  return (
+    <div className="p-4">
+      <h3 className="text-xl font-semibold">My Products</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {products && products.length > 0 ? (
+          products.map((product) => (
+            <ToolCard
+              key={product.id}
+              title={product.title}
+              image={product.image}
+              tradeFor={product.tradeFor}
+            />
+          ))
+        ) : (
+          <p className="text-center col-span-4">You have no products.</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default UserProducts;

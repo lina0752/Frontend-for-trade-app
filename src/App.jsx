@@ -5,71 +5,98 @@ import axios from "axios";
 import ProfilePage from "./components/ProfilePage";
 import RegisterPage from "./components/RegisterPage";
 import LoginPage from "./components/LoginPage";
-import ToolCard from "./components/ToolCard"; 
-import ProductDetail from "./components/ProductDetail"; 
-import UserProducts from "./components/UserProducts"; 
+import ToolCard from "./components/ToolCard";
+import ProductDetail from "./components/ProductDetail";
+import UserProducts from "./components/UserProducts";
+import AddProductForm from "./components/AddProductForm"; 
+import ProductCreated from "./components/ProductCreated";
 
-function App() {
-  const [user, setUser] = useState(null); 
+const App = () => {
+  const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
+  const [userProducts, setUserProducts] = useState([]);
 
-  // Загрузка всех продуктов
+  // Fetch all products, regardless of login status
   const fetchProducts = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/products/");
       setProducts(response.data);
     } catch (error) {
-      console.error("Ошибка при загрузке продуктов:", error);
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  // Fetch user's products when logged in
+  const fetchUserProducts = async () => {
+    if (user) {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/user/products/", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+        setUserProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching user products:", error);
+      }
     }
   };
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+    fetchUserProducts();
+  }, [user]); // Refetch products when the user status changes
 
-  // Авторизация пользователя
   const handleLogin = (userData) => {
-    setUser(userData); // Устанавливаем данные пользователя
+    setUser(userData);
   };
 
   const handleLogout = () => {
-    setUser(null); // Удаляем пользователя
-    localStorage.removeItem("access_token"); // Удаляем токен
+    setUser(null);
+    localStorage.removeItem("access_token");
+  };
+
+  const handleProductAdded = (newProduct) => {
+    setUserProducts((prevProducts) => [...prevProducts, newProduct]);
+    fetchUserProducts(); // Update user products after adding a new one
   };
 
   return (
     <Router>
       <div className="min-h-screen bg-gray-100 flex flex-col">
-        {/* Хедер с кнопкой Log in / Log out */}
         <header className="p-4 bg-white shadow">
           <div className="container mx-auto flex justify-between items-center">
             <h1 className="text-xl font-bold">My App</h1>
-            {user ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-blue-500">My products</span>
-
-                <span>{user.username}</span>
-                <button
-                  onClick={handleLogout}
+            <div className="flex items-center space-x-4">
+              <Link to="/" className="text-blue-500">Main</Link> {/* Link to all products */}
+              <Link to="/profile" className="text-blue-500">Profile</Link>
+            
+              {user ? (
+                <>
+                  <Link to="/user-products" className="text-blue-500">My Products</Link>
+                  <span>{user.username}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    Log out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
-                  Log out
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                Log in
-              </Link>
-            )}
+                  Log in
+                </Link>
+              )}
+            </div>
           </div>
         </header>
 
         <main className="flex-grow p-4">
           <Routes>
-            {/* Главная страница с отображением всех товаров */}
+            {/* Main route to display all products */}
             <Route
               path="/"
               element={
@@ -84,31 +111,24 @@ function App() {
                       />
                     ))
                   ) : (
-                    <p className="text-center col-span-4">Загрузка продуктов...</p>
+                    <p className="text-center col-span-4">Loading products...</p>
                   )}
                 </div>
               }
             />
-
-            {/* Детали продукта */}
             <Route path="/product/:id" element={<ProductDetail />} />
-
-            {/* Личный кабинет пользователя */}
             <Route path="/profile" element={<ProfilePage />} />
-
-            {/* Товары пользователя */}
-            <Route path="/user-products" element={<UserProducts />} />
-
-            {/* Страница регистрации */}
+            <Route path="/user-products" element={<UserProducts products={userProducts} />} />
             <Route path="/register" element={<RegisterPage />} />
-            
-            {/* Страница авторизации */}
             <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+            <Route path="/product-created/:id" element={<ProductCreated />} />
+            <Route path="/add-product" element={<AddProductForm onProductAdded={handleProductAdded} />} />
           </Routes>
         </main>
       </div>
     </Router>
   );
-}
+};
 
 export default App;
+
