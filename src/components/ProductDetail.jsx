@@ -1,25 +1,37 @@
-import React, { useEffect, useState } from "react";
+
 import { useParams } from "react-router-dom";
-import { Button, Space } from 'antd';
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 function ProductDetail() {
-    const { id } = useParams(); 
+    const { id } = useParams(); // Извлекаем id из URL
     const [product, setProduct] = useState(null);
 
     const fetchProduct = async () => {
+        if (!id) {
+            console.error("ID не найден!");
+            return;
+        }
         try {
+            console.log(`Запрос по URL: http://127.0.0.1:8000/api/products/${id}/`);
             const response = await axios.get(`http://127.0.0.1:8000/api/products/${id}/`);
-            setProduct(response.data); 
+            console.log("Полученные данные:", response.data);
+            setProduct(response.data);
         } catch (error) {
             console.error("Ошибка при загрузке деталей продукта:", error);
+            alert("Ошибка загрузки. Попробуйте еще раз!");
         }
     };
+    
+    
 
+    // Используем useEffect, чтобы загрузить продукт при изменении id
     useEffect(() => {
+        console.log("ID продукта: ", id);
         fetchProduct();
     }, [id]);
 
+    // Если данные не загружены, показываем сообщение о загрузке
     if (!product) return <div>Загрузка...</div>;
 
     return (
@@ -36,14 +48,8 @@ function ProductDetail() {
                 <p>{product.description}</p>
                 <p><strong>Обмен на:</strong> {product.trade_for}</p>
                 <p><strong>Адрес:</strong> {product.address}</p>
-    
-                <Space size="middle">
-                    <Button type="primary">Обменять</Button>
-                </Space>
             </div>
-            
         </div>
-        
     );
 }
 

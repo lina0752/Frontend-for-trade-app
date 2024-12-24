@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function LoginPage() {
+function LoginPage({onLogin}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -15,15 +14,49 @@ function LoginPage() {
         username,
         password,
       });
-
+  
+      // Сохраняем токены в localStorage
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
+  
+      // Получаем данные пользователя (предположим, что у вас есть API для получения данных пользователя)
+      const userResponse = await axios.get('http://127.0.0.1:8000/api/profile/', {
+        //const userResponse = await axios.get('http://127.0.0.1:8000/auth/users/me/', {
+        headers: {
+          Authorization: `Bearer ${response.data.access}`,
+        },
+      });
+  
+      // Обновляем данные пользователя в localStorage
+      localStorage.setItem('user_id', userResponse.data.id);
+      console.log(userResponse.data);
 
+  
+      // Передаем данные пользователя в App
+      onLogin(userResponse.data); // Передаем данные о пользователе
       navigate('/profile');
     } catch (err) {
       setError(err.response?.data?.non_field_errors?.[0] || 'Login failed. Please try again.');
     }
   };
+  
+  
+  // const handleLogin = async (event) => {
+  //   event.preventDefault();
+  //   try {
+  //     const response = await axios.post('http://127.0.0.1:8000/api/auth/jwt/create/', {
+  //       username,
+  //       password,
+  //     });
+
+  //     localStorage.setItem('access_token', response.data.access);
+  //     localStorage.setItem('refresh_token', response.data.refresh);
+
+  //     navigate('/profile');
+  //   } catch (err) {
+  //     setError(err.response?.data?.non_field_errors?.[0] || 'Login failed. Please try again.');
+  //   }
+  // };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">

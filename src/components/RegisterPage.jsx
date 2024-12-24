@@ -16,23 +16,38 @@ function RegisterPage() {
       setError('Passwords do not match');
       return;
     }
-
+  
     try {
-      const registerResponse = await axios.post('http://127.0.0.1:8000/api/auth/users/', {
+      // Регистрация
+      await axios.post('http://127.0.0.1:8000/api/auth/users/', {
         username,
         password,
         re_password: rePassword,
         email,
       });
-
+  
+      // Логин
       const loginResponse = await axios.post('http://127.0.0.1:8000/api/auth/jwt/create/', {
         username,
         password,
       });
-
+  
+      // Получаем данные о пользователе
+      const userResponse = await axios.get('http://127.0.0.1:8000/auth/users/me/', {
+        headers: {
+          Authorization: `Bearer ${loginResponse.data.access}`,
+        },
+      });
+  
+      // Сохраняем данные в localStorage
+      localStorage.setItem('user_id', userResponse.data.id);
       localStorage.setItem('access_token', loginResponse.data.access);
       localStorage.setItem('refresh_token', loginResponse.data.refresh);
-
+  
+      // Устанавливаем пользователя
+      setUser(userResponse.data);
+  
+      // Перенаправление
       navigate('/profile');
     } catch (err) {
       const errorResponse = err.response?.data;
@@ -46,6 +61,7 @@ function RegisterPage() {
       }
     }
   };
+  
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
