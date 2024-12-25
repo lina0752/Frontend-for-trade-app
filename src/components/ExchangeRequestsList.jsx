@@ -18,9 +18,7 @@ const ExchangeRequestsList = () => {
       }
 
       try {
-        // Декодируем токен для получения user_id
-        const decodedToken = jwt_decode(token);
-        setUserId(decodedToken.user_id);
+
 
         const response = await axios.get("http://127.0.0.1:8000/api/user/exchanges/", {
           headers: {
@@ -100,8 +98,9 @@ const ExchangeRequestsList = () => {
           >
             <List.Item.Meta
               avatar={<Avatar icon={<SwapOutlined />} />}
-              title={`From: ${request.sender?.username || "Unknown"} to: ${request.receiver?.username || "Unknown"}`}
+              title={`From: ${request.sender || "Unknown"} to: ${request.receiver || "Unknown"}`}
               description={`Offered: ${request.product_offered?.title || "Unknown"} | Requested: ${request.product_requested?.title || "Unknown"}`}
+
             />
           </List.Item>
         )}
