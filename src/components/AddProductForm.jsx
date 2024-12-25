@@ -73,68 +73,87 @@ const AddProductForm = ({ onClose, onProductAdded }) => {
         console.error("Error adding product", err);
       }
     };
-  
-    return (
-      <div className="modal">
-        <form onSubmit={handleSubmit}>
-          <h3>Add Product</h3>
-          {error && <p className="error">{error}</p>}
-          <div>
-            <label>Title:</label>
-            <input
-              type="text"
-              name="title"
-              value={product.title}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Price:</label>
-            <input
-              type="number"
-              name="price"
-              value={product.price}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Image:</label>
-            <input
-              type="file"
-              name="image"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-          </div>
-          <div>
-            <label>Address:</label>
-            <input
-              type="text"
-              name="address"
-              value={product.address}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Trade For:</label>
-            <input
-              type="text"
-              name="tradeFor"
-              value={product.tradeFor}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button type="submit">Add My Product</button>
-          <button type="button" onClick={onClose}>
+
+return (
+  <div className="modal flex items-center justify-center fixed inset-0 bg-gray-600 bg-opacity-50">
+    <div className="bg-white rounded-lg shadow-xl w-full max-w-lg p-8">
+      <h3 className="text-2xl font-semibold text-center mb-4">Add Product</h3>
+      {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Title:</label>
+          <input
+            type="text"
+            name="title"
+            value={product.title}
+            onChange={handleChange}
+            className="mt-2 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Price:</label>
+          <input
+            type="number"
+            name="price"
+            value={product.price}
+            onChange={handleChange}
+className="mt-2 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Image:</label>
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="mt-2 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Address:</label>
+          <input
+            type="text"
+            name="address"
+            value={product.address}
+            onChange={handleChange}
+            className="mt-2 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Trade For:</label>
+          <input
+            type="text"
+            name="tradeFor"
+            value={product.tradeFor}
+            onChange={handleChange}
+            className="mt-2 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+        </div>
+        <div className="space-y-4">
+          <button
+            type="submit"
+            className="w-full py-3 px-6 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+          >
+            Add My Product
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full py-3 px-6 bg-gray-500 text-white rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200"
+          >
             Cancel
           </button>
-        </form>
-      </div>
-    );
-  };
-  
+        </div>
+      </form>
+    </div>
+  </div>
+);
+};
+
 export default AddProductForm;
+
